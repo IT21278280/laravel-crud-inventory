@@ -12,7 +12,9 @@ class ItemController extends Controller
      */
     public function index()
     {
-        //
+        $items = Item::latest()->paginate(5);
+
+        return view('items.index', compact('items'))->with(request()->input('page'));
     }
 
     /**
@@ -28,7 +30,20 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //Validate the input
+
+        $request->validate([
+            'name' => 'required',
+            'detail' => 'required'
+        ]);
+
+        //Create a new Item in the db
+
+        Item::create($request->all());
+
+        //Redirect the user and send friendly message
+
+        return redirect()->route('items.index')->with('success','Item created successfully');
     }
 
     /**
@@ -36,7 +51,7 @@ class ItemController extends Controller
      */
     public function show(Item $item)
     {
-        //
+        return view('items.show', compact('item'));
     }
 
     /**
@@ -44,7 +59,7 @@ class ItemController extends Controller
      */
     public function edit(Item $item)
     {
-        //
+        return view('items.edit', compact('item'));
     }
 
     /**
@@ -52,7 +67,20 @@ class ItemController extends Controller
      */
     public function update(Request $request, Item $item)
     {
-        //
+        //Validate the input
+
+        $request->validate([
+            'name' => 'required',
+            'detail' => 'required'
+        ]);
+
+        //Create a new Item in the db
+
+        $item->update($request->all());
+
+        //Redirect the user and send friendly message
+
+        return redirect()->route('items.index')->with('success','Item updated successfully');
     }
 
     /**
@@ -60,6 +88,13 @@ class ItemController extends Controller
      */
     public function destroy(Item $item)
     {
-        //
+        //Delete the Item
+
+        $item->delete();
+
+        //Redirect the user and display success msg
+
+        return redirect()->route('items.index')->with('success','Item deleted successfully');
+
     }
 }
